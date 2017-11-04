@@ -352,12 +352,12 @@ TEST_F(EitherTest, RightCanBeQueriedAsRvalue) {
 }
 
 TEST_F(EitherTest, LeftOptCanBeQueriedAsRvalue) {
-  OnlyMoveable val = make_left<OnlyMoveable, int>(3).left_opt().value();
+  OnlyMoveable val = make_left<OnlyMoveable, int>(3).left_opt().get();
   EXPECT_EQ(OnlyMoveable(3), val);
 }
 
 TEST_F(EitherTest, RightOptCanBeQueriedAsRvalue) {
-  OnlyMoveable val = make_right<int, OnlyMoveable>(3).right_opt().value();
+  OnlyMoveable val = make_right<int, OnlyMoveable>(3).right_opt().get();
   EXPECT_EQ(OnlyMoveable(3), val);
 }
 
