@@ -72,7 +72,7 @@ bool KnownBlockVersions::checkAndUpdateVersion(uint32_t clientId, const BlockId 
 
 uint64_t KnownBlockVersions::incrementVersion(const BlockId &blockId) {
     unique_lock<mutex> lock(_mutex);
-    uint64_t &found = _knownVersions[{_myClientId, blockId}]; // If the entry doesn't exist, this creates it with value 0.
+    uint64_t &found = _knownVersions[ClientIdAndBlockId{_myClientId, blockId}]; // If the entry doesn't exist, this creates it with value 0.
     uint64_t newVersion = found + 1;
     if (newVersion == std::numeric_limits<uint64_t>::max()) {
         // It's *very* unlikely we ever run out of version numbers in 64bit...but just to be sure...
@@ -137,7 +137,7 @@ pair<ClientIdAndBlockId, uint64_t> KnownBlockVersions::_deserializeKnownVersions
     BlockId blockId(deserializer->readFixedSizeData<BlockId::BINARY_LENGTH>());
     uint64_t version = deserializer->readUint64();
 
-    return {{clientId, blockId}, version};
+    return {ClientIdAndBlockId{clientId, blockId}, version};
 };
 
 void KnownBlockVersions::_serializeKnownVersionsEntry(Serializer *serializer, const pair<ClientIdAndBlockId, uint64_t> &entry) {
@@ -183,7 +183,7 @@ uint32_t KnownBlockVersions::myClientId() const {
 
 uint64_t KnownBlockVersions::getBlockVersion(uint32_t clientId, const BlockId &blockId) const {
     unique_lock<mutex> lock(_mutex);
-    return _knownVersions.at({clientId, blockId});
+    return _knownVersions.at(ClientIdAndBlockId{clientId, blockId});
 }
 
 void KnownBlockVersions::markBlockAsDeleted(const BlockId &blockId) {
