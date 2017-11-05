@@ -10,7 +10,6 @@
 #include "../../../cpp-utils/crypto/symmetric/testutils/FakeAuthenticatedCipher.h"
 #include <gtest/gtest.h>
 
-using ::testing::Test;
 
 using blockstore::BlockStore;
 using blockstore::BlockStore2;
