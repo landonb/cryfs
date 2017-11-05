@@ -54,7 +54,7 @@ public:
 
   blockstore::BlockId CopyBaseBlock(const blockstore::BlockId &blockId) {
     auto source = baseBlockStore->load(blockId).value();
-    return baseBlockStore->create(std::move(source));
+    return baseBlockStore->create(source);
   }
 
 private:
