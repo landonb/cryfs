@@ -11,7 +11,7 @@ set -e
 NUMCORES=`nproc`
 
 # Run cmake in current working directory, but on source that is in the same directory as this script file
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON "${0%/*}"
+cmake -DBUILD_TESTING=on -DCMAKE_EXPORT_COMPILE_COMMANDS=ON "${0%/*}"
 
 run-clang-tidy.py -j${NUMCORES} -quiet -header-filter "$(realpath ${0%/*})/(src|test)/.*" $@
 
