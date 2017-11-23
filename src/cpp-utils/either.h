@@ -14,13 +14,15 @@ namespace cpputils {
         either(const Left &left): _side(Side::left) {
             _construct_left(left);
         }
-        either(Left &&left): _side(Side::left) {
+        either(Left &&left) noexcept(std::is_nothrow_move_constructible<Left>::value)
+        : _side(Side::left) {
             _construct_left(std::move(left));
         }
         either(const Right &right): _side(Side::right) {
             _construct_right(right);
         }
-        either(Right &&right): _side(Side::right) {
+        either(Right &&right) noexcept(std::is_nothrow_move_constructible<Right>::value)
+        : _side(Side::right) {
             _construct_right(std::move(right));
         }
         //TODO Try allowing copy-construction when Left/Right types are std::is_convertible
@@ -31,7 +33,8 @@ namespace cpputils {
                 _construct_right(rhs._right);
             }
         }
-        either(either<Left, Right> &&rhs): _side(rhs._side) {
+        either(either<Left, Right> &&rhs) noexcept(std::is_nothrow_move_constructible<Left>::value && std::is_nothrow_move_constructible<Right>::value)
+        : _side(rhs._side) {
             if(_side == Side::left) {
                 _construct_left(std::move(rhs._left));
             } else {
@@ -55,7 +58,7 @@ namespace cpputils {
             return *this;
         }
 
-        either<Left, Right> &operator=(either<Left, Right> &&rhs) {
+        either<Left, Right> &operator=(either<Left, Right> &&rhs) noexcept(std::is_nothrow_move_assignable<Left>::value && std::is_nothrow_move_assignable<Right>::value) {
             _destruct();
             _side = rhs._side;
             if (_side == Side::left) {
@@ -110,7 +113,7 @@ namespace cpputils {
                 return boost::none;
             }
         }
-        boost::optional<Left> left_opt() && {
+        boost::optional<Left> left_opt() && noexcept(noexcept(Left(std::move(std::declval<Left>())))) {
             if (_side == Side::left) {
                 return std::move(_left);
             } else {
@@ -132,7 +135,7 @@ namespace cpputils {
                 return boost::none;
             }
         }
-        boost::optional<Right> right_opt() && {
+        boost::optional<Right> right_opt() && noexcept(noexcept(Right(std::move(std::declval<Right>())))){
             if (_side == Side::right) {
                 return std::move(_right);
             } else {
